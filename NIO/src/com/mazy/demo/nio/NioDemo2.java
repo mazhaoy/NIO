@@ -47,8 +47,8 @@ public class NioDemo2 {
 	 */
 	@Test
 	public void test02() throws Exception{
-		FileChannel inChannel = FileChannel.open(Paths.get("1.jpg"), StandardOpenOption.READ);
-		FileChannel ouChannel = FileChannel.open(Paths.get("3.jpg"), StandardOpenOption.WRITE,StandardOpenOption.CREATE,StandardOpenOption.READ);
+		FileChannel inChannel = FileChannel.open(Paths.get("d:/1.avi"), StandardOpenOption.READ);
+		FileChannel ouChannel = FileChannel.open(Paths.get("d:/3.avi"), StandardOpenOption.WRITE,StandardOpenOption.CREATE,StandardOpenOption.READ);
 		//内存映射文件
 		MappedByteBuffer inChannelMap = inChannel.map(MapMode.READ_ONLY, 0,inChannel.size() );
 		MappedByteBuffer ouChannelMap = ouChannel.map(MapMode.READ_WRITE, 0, inChannel.size());
@@ -56,6 +56,24 @@ public class NioDemo2 {
 		byte[] dst = new byte[inChannelMap.limit()];	
 		inChannelMap.get(dst);
 		ouChannelMap.put(dst);
+		
+		ouChannel.close();
+		inChannel.close();
+		
+	}
+	
+	/**
+	 * 通道之间的数据传输(直接缓冲区)
+	 * @throws Exception
+	 */
+	@Test
+	public void test03() throws Exception{
+		FileChannel inChannel = FileChannel.open(Paths.get("d:/1.avi"), StandardOpenOption.READ);
+		FileChannel ouChannel = FileChannel.open(Paths.get("d:/2.avi"), StandardOpenOption.READ,StandardOpenOption.WRITE,StandardOpenOption.CREATE);
+		
+		ouChannel.transferFrom(inChannel, 0, inChannel.size());
+		//transferTo 复制的文件大小为0   TODO   之后解决
+		//inChannel.transferTo(0, ouChannel.size(), ouChannel);
 		
 		ouChannel.close();
 		inChannel.close();
